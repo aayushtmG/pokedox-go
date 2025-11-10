@@ -11,15 +11,16 @@ func (c *Client) ListLocations(pageURl *string) (RespShallowLocations, error) {
 	if pageURl != nil {
 		url = *pageURl
 	}	
-	data, exist := c.Cache.Get(url)	
-	if exist {
-		locationsResp := RespShallowLocations{}
-        err := json.Unmarshal(data,&locationsResp)
-		if err != nil {
-			return RespShallowLocations{},err
+
+	//if exists in cache
+	if val,ok := c.cache.Get(url); ok {
+				locationsResp := RespShallowLocations{}
+					err := json.Unmarshal(val,&locationsResp)
+				if err != nil {
+					return RespShallowLocations{},err
+				}
+				return locationsResp, nil
 		}
-		return locationsResp, nil
-    }
 
 	req, err := http.NewRequest("GET",url,nil)
 	if err != nil {
@@ -30,17 +31,17 @@ func (c *Client) ListLocations(pageURl *string) (RespShallowLocations, error) {
 		return RespShallowLocations{},err
 	}
 	defer resp.Body.Close()
-	data,err = io.ReadAll(resp.Body)
+	data,err := io.ReadAll(resp.Body)
 	if err != nil {
 		return RespShallowLocations{},err
 	}
 
-	c.Cache.Add(url,data)
 	locationsResp := RespShallowLocations{}
 	err = json.Unmarshal(data,&locationsResp)
 	if err != nil {
 		return RespShallowLocations{},err
 	}
 
+	c.cache.Add(url,data)
 	return locationsResp, nil
 }

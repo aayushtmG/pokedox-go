@@ -2,7 +2,7 @@ package main
 
 import (
 	"errors"
-	// "fmt"
+	"fmt"
 )
 
 func commandMapf(cfg *config) error {
@@ -15,10 +15,12 @@ func commandMapf(cfg *config) error {
 	
 	cfg.nextLocationsURL = locationsResp.Next
 	cfg.previousLocationsURL = locationsResp.Previous
-	
-	// for _, location := range locationsResp.Results {
-	// 	fmt.Println(location.Name)
-	// }
+
+
+	fmt.Println("DISPLAYING MAP LOCATIONS----------------------") 
+	for _, location := range locationsResp.Results {
+		fmt.Println(location.Name)
+	}
 	return nil
 }
 
@@ -33,10 +35,12 @@ func commandMapb(cfg *config) error {
 	}
 	cfg.nextLocationsURL = locationsResp.Next
 	cfg.previousLocationsURL = locationsResp.Previous
-	
-	// for _, location := range locationsResp.Results {
-	// 	fmt.Println(location.Name)
-	// }
+
+
+	fmt.Println("DISPLAYING MAP LOCATIONS----------------------") 
+	for _, location := range locationsResp.Results {
+		fmt.Println(location.Name)
+	}
 	return nil
 }
 

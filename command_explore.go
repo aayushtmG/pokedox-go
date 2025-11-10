@@ -1,22 +1,23 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 )
-func commandExplore(cfg *config,params ...string) error{
-		if len(params) == 0 {
-			return fmt.Errorf("error: include id or name of the location area")
+func commandExplore(cfg *config,args ...string) error{
+		if len(args) != 1 {
+			return errors.New("you must provide at least one location name and only one")
 		}
-		resp, err := cfg.pokeapiClient.FindPokemons(params[0])
 
+		location, err := cfg.pokeapiClient.GetLocation(args[0])
 		if err != nil {
 			return err
 		}
 
-		fmt.Printf("Exploring %s...\n",resp.Name)
+		fmt.Printf("Exploring %s...\n",location.Name)
 		fmt.Println("Found Pokemon:")
-		for _, pokeObj := range resp.PokemonsFound {
-				fmt.Println(" - ",pokeObj.P.Name)
+		for _, enc := range location.PokemonEncounters {
+				fmt.Println(" - ",enc.Pokemon.Name)
 		}
 
 		return nil

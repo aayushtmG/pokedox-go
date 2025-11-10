@@ -23,8 +23,10 @@ func startRepl(cfg *config) {
 		reader.Scan()
 
 		words := cleanInput(reader.Text())
-		if len(words) == 0 {
-			continue
+		args := []string{}
+
+		if len(words) > 1 {
+			args = words[1:]	
 		}
 
 		commandName := words[0]
@@ -32,18 +34,7 @@ func startRepl(cfg *config) {
 		command, exists := getCommands()[commandName]
 		
 		if exists {
-			var err error
-			if command.name == "explore" {
-				if len(words) < 2 {
-					fmt.Println("Location required for explore command")
-					continue
-				}
-				params := words[1]
-				err = command.callback(cfg,params)
-			}else{
-				err = command.callback(cfg)
-			}
-			
+			err := command.callback(cfg,args...)
 			if err != nil {
 				fmt.Println(err)
 			}
@@ -90,7 +81,7 @@ func getCommands() map[string]cliCommand {
 			callback:    commandExit,
 		},
 		"explore": {
-			name:        "explore",
+			name:        "explore <location name>",
 			description: "Explore a area",
 			callback:    commandExplore,
 		},

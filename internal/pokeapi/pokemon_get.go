@@ -2,6 +2,7 @@ package pokeapi
 
 import (
 	"encoding/json"
+	"fmt"
 	"io"
 	"net/http"
 )
@@ -36,14 +37,15 @@ func (c *Client) GetPokemon(name string) (Pokemon,error){
 
 	data, err := io.ReadAll(res.Body)
 	if err != nil {
+		fmt.Println("here")
 		return Pokemon{}, err
 	}
 	var pokemonResp Pokemon
 	if err = json.Unmarshal(data, &pokemonResp); err != nil{
-		return Pokemon{}, err
+		return Pokemon{}, fmt.Errorf("invalid pokemon name")
 	}
 
-
 	c.cache.Add(url,data)
+
 	return pokemonResp, nil
 } 
